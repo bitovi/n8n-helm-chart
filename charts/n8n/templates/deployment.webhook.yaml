@@ -114,7 +114,7 @@ spec:
             {{- toYaml .Values.webhook.resources | nindent 12 }}
           volumeMounts:
             - name: data
-              mountPath: /home/node/.n8n
+              mountPath: {{ .Values.main.persistence.mountPath | default "/home/node/.n8n" }}
           {{- if .Values.webhook.extraVolumeMounts }}
             {{- toYaml .Values.webhook.extraVolumeMounts | nindent 12 }}
           {{- end }}

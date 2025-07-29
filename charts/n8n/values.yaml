@@ -83,6 +83,8 @@ main:
     enabled: false
     # what type volume, possible options are [existing, emptyDir, dynamic] dynamic for Dynamic Volume Provisioning, existing for using an existing Claim
     type: emptyDir
+    # Path where the data volume is mounted
+    mountPath: /home/node/.n8n
     # Persistent Volume Storage Class
     # If defined, storageClassName: <storageClass>
     # If set to "-", storageClassName: "", which disables dynamic provisioning
