@@ -182,6 +182,8 @@ main:
     enabled: false
     # what type volume, possible options are [existing, emptyDir, dynamic] dynamic for Dynamic Volume Provisioning, existing for using an existing Claim
     type: emptyDir
+    # Path where the data volume is mounted
+    mountPath: /home/node/.n8n
     # Persistent Volume Storage Class
     # If defined, storageClassName: <storageClass>
     # If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -322,10 +324,10 @@ main:
   initContainers: []
   #    - name: init-data-dir
   #      image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-  #      command: [ "/bin/sh", "-c", "mkdir -p /home/node/.n8n/" ]
+  #      command: [ "/bin/sh", "-c", "mkdir -p {{ .Values.main.persistence.mountPath }}/" ]
   #      volumeMounts:
   #        - name: data
-  #          mountPath: /home/node/.n8n
+  #          mountPath: {{ .Values.main.persistence.mountPath }}
 
 
   service:
@@ -387,6 +389,8 @@ worker:
     enabled: false
     # what type volume, possible options are [existing, emptyDir, dynamic] dynamic for Dynamic Volume Provisioning, existing for using an existing Claim
     type: emptyDir
+    # Path where the data volume is mounted
+    mountPath: /home/node/.n8n
     # Persistent Volume Storage Class
     # If defined, storageClassName: <storageClass>
     # If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -569,6 +573,8 @@ webhook:
     enabled: false
     # what type volume, possible options are [existing, emptyDir, dynamic] dynamic for Dynamic Volume Provisioning, existing for using an existing Claim
     type: emptyDir
+    # Path where the data volume is mounted
+    mountPath: /home/node/.n8n
     # Persistent Volume Storage Class
     # If defined, storageClassName: <storageClass>
     # If set to "-", storageClassName: "", which disables dynamic provisioning
