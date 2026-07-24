@@ -88,6 +88,15 @@ main:
         secretKeyRef:
           name: n8n-app-secrets # from OnePasswordItem, see onepassword.items below
           key: encryption-key
+    # Only set on main: license state (cert, entitlements) is activated here and
+    # persisted to the shared `settings` table; in queue mode the leader
+    # broadcasts a "reload-license" pubsub command to worker/webhook rather than
+    # each process activating independently (see license.js/base-command.js).
+    N8N_LICENSE_ACTIVATION_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: n8n-app-secrets
+          key: license-activation-key
     DB_POSTGRESDB_PASSWORD:
       valueFrom:
         secretKeyRef:
@@ -182,14 +191,15 @@ valkey:
 # pattern already established by pto-api (bitovi/pto-api PR, and
 # bitovi-platform-services gitops/apps/onepassword-connect.yaml PR #11).
 # The 1Password item "n8n-app-secrets" needs fields: basic-auth-user,
-# basic-auth-password, encryption-key.
+# basic-auth-password, encryption-key, license-activation-key.
 # ---------------------------------------------------------------------------
 onepassword:
   enabled: true
   # Confirmed: the Connect token is scoped to the "bitovi-platform" vault and
   # pto-api already reads from it (bitovi/pto-api deploy/values.yaml:
   # vaults/bitovi-platform/items/...). The "n8n-app-secrets" item in that vault
-  # must have fields: basic-auth-user, basic-auth-password, encryption-key.
+  # must have fields: basic-auth-user, basic-auth-password, encryption-key,
+  # license-activation-key.
   vault: bitovi-platform
   items:
     n8n-app-secrets: n8n-app-secrets
