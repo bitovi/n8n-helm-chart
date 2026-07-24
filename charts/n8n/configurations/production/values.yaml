@@ -94,6 +94,15 @@ main:
         secretKeyRef:
           name: n8n-app-secrets # from OnePasswordItem, see onepassword.items below
           key: encryption-key
+    # n8n has no way to detect its own public URL behind the ALB, and falls
+    # back to its internal bind address when constructing user-facing links.
+    # Confirmed via the OIDC login button redirecting to
+    # "http://localhost:5678/rest/sso/oidc/login" instead of the real
+    # hostname, even though SSO itself was otherwise correctly configured.
+    N8N_EDITOR_BASE_URL:
+      value: "https://n8n.bitovi-tools.com"
+    WEBHOOK_URL:
+      value: "https://n8n.bitovi-tools.com"
     # Only set on main: license state (cert, entitlements) is activated here and
     # persisted to the shared `settings` table; in queue mode the leader
     # broadcasts a "reload-license" pubsub command to worker/webhook rather than
@@ -152,6 +161,10 @@ worker:
         secretKeyRef:
           name: n8n-app-secrets
           key: encryption-key
+    # See the same setting under main: above - needed wherever webhook URLs
+    # get generated/displayed, not just where they're served.
+    WEBHOOK_URL:
+      value: "https://n8n.bitovi-tools.com"
     DB_POSTGRESDB_PASSWORD:
       valueFrom:
         secretKeyRef:
@@ -174,6 +187,11 @@ webhook:
   # See the same setting under main: above.
   enableServiceLinks: false
   extraEnv:
+    # See the same setting under main: above - this is the process that
+    # actually serves incoming webhook requests, so it's the most important
+    # place for this to be correct.
+    WEBHOOK_URL:
+      value: "https://n8n.bitovi-tools.com"
     N8N_ENCRYPTION_KEY:
       valueFrom:
         secretKeyRef:
