@@ -162,6 +162,14 @@ main:
   # Labels to be implemented on the main service pod
   podLabels: {}
 
+  # Kubernetes auto-injects a "<SVCNAME>_PORT" env var (Docker-links style,
+  # e.g. "tcp://<clusterIP>:<port>") for every Service in the namespace when
+  # this is left at the Kubernetes default of true. A Service literally named
+  # "n8n" collides with n8n's own N8N_PORT env var, crashing main on startup
+  # ("Invalid number value for N8N_PORT: tcp://..."). false avoids this whole
+  # class of Service-name collisions.
+  enableServiceLinks: true
+
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
@@ -335,6 +343,10 @@ worker:
   # Labels to be implemented on the worker pod
   podLabels: {}
 
+  # See the same setting under main: above - avoids Kubernetes auto-injecting
+  # "<SVCNAME>_PORT"-style env vars for every Service in the namespace.
+  enableServiceLinks: true
+
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
@@ -497,6 +509,10 @@ webhook:
   podAnnotations: {}
   # Labels to be implemented on the webhook pod
   podLabels: {}
+
+  # See the same setting under main: above - avoids Kubernetes auto-injecting
+  # "<SVCNAME>_PORT"-style env vars for every Service in the namespace.
+  enableServiceLinks: true
 
   podSecurityContext:
     runAsNonRoot: true

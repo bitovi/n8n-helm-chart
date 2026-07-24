@@ -49,6 +49,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "n8n.serviceAccountName" . }}
+      enableServiceLinks: {{ .Values.webhook.enableServiceLinks }}
       securityContext:
         {{- toYaml .Values.webhook.podSecurityContext | nindent 8 }}
       {{- if .Values.webhook.initContainers }}
