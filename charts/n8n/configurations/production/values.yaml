@@ -57,6 +57,12 @@ ingress:
 # upstream, this is the officially-supported topology)
 # ---------------------------------------------------------------------------
 main:
+  # A Service literally named "n8n" (this release's fullnameOverride) exists
+  # in this namespace, so Kubernetes' default true here injects an
+  # "N8N_PORT=tcp://<clusterIP>:<port>" env var that collides with n8n's own
+  # N8N_PORT and crashes main on startup ("Invalid number value for
+  # N8N_PORT"). false avoids the whole class of Service-name collisions.
+  enableServiceLinks: false
   # Real persistence, unlike worker/webhook: community nodes with
   # community_packages.enabled=true install to /home/node/.n8n/nodes, and
   # this is the only pod that would otherwise lose them on every restart.
@@ -129,6 +135,11 @@ main:
 worker:
   enabled: true
   replicaCount: 2
+  # See the same setting under main: above. Not currently observed to crash
+  # worker (it doesn't strictly validate N8N_PORT the way main's HTTP server
+  # does), but disabled for consistency and to avoid latent risk from other
+  # Service-name collisions (n8n-db, n8n-valkey, etc.).
+  enableServiceLinks: false
   extraEnv:
     # A worker only serves GET /healthz on 5678 when this is set; without it the
     # endpoint 404s, the liveness probe fails, and kubelet kills the pod every
@@ -160,6 +171,8 @@ worker:
 webhook:
   enabled: true
   replicaCount: 2
+  # See the same setting under main: above.
+  enableServiceLinks: false
   extraEnv:
     N8N_ENCRYPTION_KEY:
       valueFrom:
