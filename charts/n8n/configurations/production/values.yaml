@@ -23,7 +23,7 @@ fullnameOverride: "n8n"
 
 image:
   repository: n8nio/n8n
-  tag: "1.122.4" # pinned to this chart's appVersion - bump deliberately, never "latest"
+  tag: "2.46.6" # pinned to this chart's appVersion - bump deliberately, never "latest"
   pullPolicy: IfNotPresent
 
 # ---------------------------------------------------------------------------
